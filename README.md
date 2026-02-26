@@ -1,36 +1,111 @@
 # Bechdel-Test Analysis of Oscar-Nominated Films
 ![Bechdel Test](https://upload.wikimedia.org/wikipedia/en/b/bf/Dykes_to_Watch_Out_For_%28Bechdel_test_origin%29.jpg)
 
-## Abstract
-The Bechdel Test is a sequence of three questions designed to assess the presence of women in movies. It highlights the underrepresentation and overall gender asymmetry in fiction, using easily detectable metrics to evaluate gender bias. This study investigates the application of the Bechdel test to a selection of 20 Oscar-nominated films, aiming to automate the evaluation of gender representation within their scripts.
+## Overview
 
-The film industry stands as a powerful cultural force, shaping perceptions and influencing social interactions across the globe. It serves not only as a source of entertainment but also as a mirror reflecting the complexities of the human experience. In recent years, the call for greater representation has intensified, collecting different opinions and representation-based metrics of evaluation. The Bechdel Test, devised by Alison Bechdel, provides a set of criteria for gender portrayal in films, assessing if they feature at least two named female characters who engage in a conversation about something other than a male character.
+This project automates the evaluation of the Bechdel Test on 20 Oscar-nominated films by integrating web scraping, relational database design and script-level textual analysis.
 
-The objective of this study was to automate the analysis of 20 films spanning multiple genres to ascertain the prevalence and characteristics of those conforming to Bechdel Test criteria. The list of movies analyzed can be found in Appendix 1. Films were selected among those nominated for an Oscar, as this was considered an appropriate metric to indicate that a film was well-received by both the public and critics. Additionally, it is noted that none of the selected films have female directors.
+The objective is to quantify gender representation in film dialogue and assess structural inequalities using reproducible computational methods.
 
-## Goal
-This project aims to shed light on gender representation in film through an automated approach to the Bechdel Test. The findings will contribute to the ongoing discourse on gender equity in the film industry, providing insights that can inform future productions and assessments of representation in cinema.
+The Bechdel Test requires that a film:
+1. Has at least two named female characters  
+2. Includes at least one scene where they talk to each other  
+3. The conversation is not about a man  
 
-## Methodology
-Utilizing a systematic data management approach, various sources were leveraged to create a dataset encompassing different facets of each film, including cast, dialogue, and thematic content. Methodologically, the research involved the creation, categorization, and analysis of this dataset, employing both qualitative and quantitative methodologies to derive meaningful insights.
+The analysis moves beyond manual evaluation by applying automated database-driven checks on full movie scripts.
 
-## Data Collection
+---
 
-### Research Questions
-The research question that shaped this analysis adheres to the criteria outlined by the Bechdel test, which served as a guiding framework. The whole concept of this test is enclosed in the following text of a Bechdel’s comic:
-> “I only go to a movie if it satisfies three basic requirements. One: it has to have at least two women in it, who, two, talk to each other about, three, something besides a man.”
+## Dataset Construction
 
-The analysis was therefore conducted in order to select the films that positively met the following criteria:
-1. Does it contain two women?
-2. Do the (at least) two women interact with each other in at least one scene?
-3. Is the interaction about something other than a man?
+A structured relational database was built from multiple sources:
 
-### Data Sources and Data Extraction
-The data collected for this project encompasses various components sourced from multiple online platforms. The components were categorized into script data, gender, actors, and additional pertinent details:
+### Data Sources
+- IMSDB – Movie scripts
+- IMDb – Cast information
+- Names Dataset Library – Gender inference
+- External validation (Wikipedia + Bechdel Test forum)
 
-- **Scripts**: Crucial data for the analysis of dialogue and scene content. The scripts were retrieved from the Internet Movie Script Database (IMSD) using a custom extraction function developed to obtain the script text for each title, which was then parsed and divided into different scenes. The Beautiful Soup library was used for web scraping.
-  
-- **Cast**: Information about the cast helped identify the actors and their respective roles and was sourced from the Internet Movie Database (IMDB). Utilizing web scraping techniques, the full credits page of each film was accessed to extract the cast list, including data inherent to the names and the corresponding roles.
+### Dataset Statistics
 
-- **Gender**: The determination of the gender of actors was performed utilizing the Names Dataset Library and NLP techniques.
+- 20 films analyzed
+- 3012 scenes extracted
+- 876 actors
+- 3 relational tables:
+  - MOVIE
+  - SCRIPT
+  - CAST
 
+An SQLite database was designed with primary/foreign key relationships to ensure referential integrity and efficient querying.
+
+---
+
+## Data Processing
+
+### Script Parsing
+- Scene segmentation using INT/EXT markers
+- Uppercase token analysis to detect speakers
+- Lowercase dictionary analysis to detect male mentions
+- Text cleaning (HTML removal, punctuation normalization)
+
+### Cast Cleaning
+- Role standardization
+- Removal of uncredited characters
+- Elimination of ambiguous roles (e.g., “The Doctor”)
+- First-name probabilistic gender inference
+
+### Data Quality Controls
+- Cross-validation with external sources
+- Manual resolution of inconsistencies
+- Referential integrity enforcement
+
+---
+
+## Analytical Framework
+
+The Bechdel evaluation was implemented through SQL queries applied to the relational database.
+
+### Results
+
+Out of 20 films:
+
+- 20 pass Level 1 (100%)
+- 12 pass Level 2 (60%)
+- 8 pass all three levels (40%)
+
+Additional findings:
+
+- 71% of cast members are male
+- Men appear in scenes 2.1× more often than women
+- 77% of scenes include a male character as subject or mention
+- 70% of Level-3-passing scenes occur in indoor settings
+
+The percentage of “Bechdel-friendly” scenes across full scripts remains consistently low.
+
+---
+
+## Technical Stack
+
+- Python
+- BeautifulSoup (web scraping)
+- SQLite
+- SQL queries
+- NLP preprocessing
+- Names Dataset Library
+
+---
+
+## Key Insights
+
+- Gender imbalance is measurable at script level.
+- Passing the Bechdel Test often depends on isolated scenes.
+- Female characters are frequently defined relationally (e.g., wife, mother).
+- Automated evaluation exposes structural patterns invisible in manual summaries.
+
+---
+
+## Authors
+
+Daniele Lepre  
+Alice Anna Maria Brunazzi  
+Alessandro Della Beffa
